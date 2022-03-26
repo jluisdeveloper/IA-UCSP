@@ -16,7 +16,7 @@ struct Point {
 };
 
 Point inicio(0, 0);
-Point fin(9,9 );
+Point fin(9, 9);
 
 
 template <class N, class E>
@@ -25,7 +25,7 @@ struct Node
     int id = 0;
     E x = 0;
     E y = 0;
-    N distanceToObjective = 0;
+    N DtO = 0;
     list<Node<N, E>*> edges;
 
     Node(E x1, E y1, E _id, N _distance)
@@ -33,14 +33,14 @@ struct Node
         x = x1;
         y = y1;
         id = _id;
-        distanceToObjective = _distance;
+        DtO = _distance;
     }
     Node(E x1, E y1)
     {
         x = x1;
         y = y1;
         id = 0;
-        distanceToObjective = 0;
+        DtO = 0;
     }
 };
 
@@ -71,18 +71,32 @@ struct Graph
 };
 
 
+void tester(Graph<float, int> graph)
+{
+    //Printer of Remaning Nodes             ########test########
+    for (list<Node<float, int>*>::iterator it = graph.Nodes.begin(); it != graph.Nodes.end(); ++it) {
+        cout << (*it)->x << "," << (*it)->y << endl;
+    }
+}
+
+int random(int x)
+{
+    return rand() % x;
+}
+
 //Node Deleter
-void Del_node(int x, int filas, int columnas, Graph<float, int> graph)
+void Del_node(int x, int Rows, int Columns, Graph<float, int> graph)
 {
     srand((unsigned)time(0));
     vector<Point> Delt;
     for (int k = 0; k < x; k++) {
-        int v1 = rand() % filas;
-        int v2 = rand() % columnas;
 
-        if (v1 != inicio.x || v2 != inicio.y) 
+        int v1 = random(Rows);
+        int v2 = random(Columns);
+
+        if (v1 != inicio.x || v2 != inicio.y)
         {
-            if (v1 != fin.x || v2 != fin.y) 
+            if (v1 != fin.x || v2 != fin.y)
                 Delt.push_back(Point(v1, v2));
         }
 
@@ -92,9 +106,8 @@ void Del_node(int x, int filas, int columnas, Graph<float, int> graph)
     cout << "Nodes Deleted " << endl << endl;
     for (list<Node<float, int>*>::iterator it = graph.Nodes.begin(); it != graph.Nodes.end(); ++it) {
         for (int i = 0; i < Delt.size(); i++) {
-            if ((*it)->x == Delt[i].x && (*it)->y == Delt[i].y) 
+            if ((*it)->x == Delt[i].x && (*it)->y == Delt[i].y)
             {
-
                 cout << "(" << (*it)->x << "," << (*it)->y << ")" << " ";
                 for (list<Node<float, int>*>::iterator et = (*it)->edges.begin(); et != (*it)->edges.end(); ++et) {
                     for (list<Node<float, int>*>::iterator at = (*et)->edges.begin(); at != (*et)->edges.end(); ++at) {
@@ -108,50 +121,54 @@ void Del_node(int x, int filas, int columnas, Graph<float, int> graph)
             }
         }
     }
+    cout << endl;
+    tester(graph);
 }
+
+
 int main() {
 
     Graph<float, int> graph;
 
-    int columnas, filas;
-    cout << "Ingresar F: ";
-    cin >> filas;
-    cout << endl << "Ingresar C: ";
-    cin >> columnas;
+    int Columns, Rows;
+    cout << "Insert Rows: ";
+    cin >> Rows;
+    cout << endl << "Insert Columns: ";
+    cin >> Columns;
 
     //Node Creator
-    for (int i = 0; i < filas; i++) {
-        for (int j = 0; j < columnas; j++) {
+    int i = 0;
+    while (i < Rows)
+    {
+        int j = 0;
+        while (j < Columns)
+        {
             Node<float, int>* tmp = new Node<float, int>(i, j);
             graph.insertNode(tmp);
+            j++;
         }
+        i++;
     }
 
-
-
-    //Printer on Nodes
-    for (list<Node<float, int>*>::iterator it = graph.Nodes.begin(); it != graph.Nodes.end(); ++it) {
-        cout << (*it)->x << "," << (*it)->y << endl;
-    }
+    //Printer on Nodes                      ########test########
+    tester(graph);
 
 
     int y;
-    cout << "Ingresar el porcentaje de nodos que desea Delt: ";
+    cout << "Insert % to Delete: ";
     cin >> y;
 
     //Percentage Calculator
-    int x = (filas * columnas);
+    int x = (Rows * Columns);
     x = x * y;
     x = x / 100;
 
-    Del_node(x, filas, columnas, graph);
+
+    //Eliminador
+    Del_node(x, Rows, Columns, graph);
 
 
-    cout << endl;
-    //Printer of Remaning Nodes
-    for (list<Node<float, int>*>::iterator it = graph.Nodes.begin(); it != graph.Nodes.end(); ++it) {
-        cout << (*it)->x << "," << (*it)->y << endl;
-    }
+
 
     return 0;
 }
