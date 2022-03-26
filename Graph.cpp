@@ -16,7 +16,7 @@ struct Point {
 };
 
 Point inicio(0, 0);
-Point fin(9, 9);
+Point fin(3, 5);
 
 
 template <class N, class E>
@@ -66,6 +66,63 @@ struct Graph
             }
         }
         return false;
+    }
+
+    typedef vector<Node<float, int>*> Route;
+    typedef pair<Node<float, int>*, Route> Node1;
+
+
+    //DFS as the name says   ._.
+    void dfs() {
+        cout << "\nDFS\n" << endl;
+        cout << "Route\n\n: ";
+        Route r;
+        Node<float, int>* temp;//Node1 inicio;
+        for (typename::list<Node<N, E>*>::iterator it = Nodes.begin(); it != Nodes.end(); ++it) {
+            if ((*it)->x == inicio.x && (*it)->y == inicio.y) {
+                temp = (*it);
+                break;
+            }
+        }
+
+        Node1 n(temp, r);
+        stack<Node1> Stack1;
+        Stack1.push(n);
+
+        while (!Stack1.empty()) {
+            Node1 temp;
+            temp = Stack1.top();
+            Stack1.pop();
+
+            if (temp.first->x == fin.x && temp.first->y == fin.y) {
+                for (auto i : temp.second) {
+                    cout << "(" << i->x << "," << i->y << ") -> ";
+                }
+ 
+                return;
+            }
+
+            for (typename::list<Node<N, E>*>::iterator it2 = temp.first->edges.begin(); it2 != temp.first->edges.end(); ++it2) {
+                bool encontrado = false;
+
+                for (auto j : temp.second) {
+                    if ((*it2) == j) {
+                        encontrado = true;
+                        break;
+                    }
+                }
+
+
+                if (!encontrado) {
+                    Node1 n2;
+                    n2.second = temp.second;//Route actual
+                    n2.second.push_back(temp.first);//agregit2 Node1 actual a la Route
+                    n2.first = (*it2);//agregit2 el nuevo Node1
+                    Stack1.push(n2);
+                }
+            }
+        }
+
     }
 
 };
@@ -126,6 +183,33 @@ void Del_node(int x, int Rows, int Columns, Graph<float, int> graph)
 }
 
 
+//Node connector, Horizontal, Vertical and Diagonal
+void Connector(Graph<float, int> graph)
+{
+    for (list<Node<float, int>*>::iterator it = graph.Nodes.begin(); it != graph.Nodes.end(); ++it)
+    {
+        Node<float, int>** p;
+
+        if (graph.exist(((*it)->x) - 1, ((*it)->y) - 1, p))
+            (*it)->edges.push_back(*p); // Dig I +
+        if (graph.exist(((*it)->x) - 1, ((*it)->y), p))
+            (*it)->edges.push_back(*p); 
+        if (graph.exist(((*it)->x) - 1, ((*it)->y) + 1, p))
+            (*it)->edges.push_back(*p); // Dig D +
+        if (graph.exist(((*it)->x), ((*it)->y) - 1, p))
+            (*it)->edges.push_back(*p); 
+        if (graph.exist(((*it)->x), ((*it)->y) + 1, p))
+            (*it)->edges.push_back(*p); 
+        if (graph.exist(((*it)->x) + 1, ((*it)->y) - 1, p))
+            (*it)->edges.push_back(*p); // Dig I -
+        if (graph.exist(((*it)->x) + 1, ((*it)->y), p))
+            (*it)->edges.push_back(*p); 
+        if (graph.exist(((*it)->x) + 1, ((*it)->y) + 1, p))
+            (*it)->edges.push_back(*p); // Dig D -
+    }
+
+}
+
 int main() {
 
     Graph<float, int> graph;
@@ -153,6 +237,8 @@ int main() {
     //Printer on Nodes                      ########test########
     tester(graph);
 
+    Connector(graph);
+    
 
     int y;
     cout << "Insert % to Delete: ";
@@ -168,7 +254,10 @@ int main() {
     Del_node(x, Rows, Columns, graph);
 
 
-
+    cout << endl;
+    cout << "----------------------------------------------------------" << endl;
+    graph.dfs();
+    cout << endl;
 
     return 0;
 }
