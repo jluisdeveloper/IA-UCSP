@@ -1,10 +1,14 @@
 #include <iostream>
 #include <list>
 #include <stack>
+#include <queue>
 #include <algorithm>
 #include <vector>
 #include <ctime>
 #include <math.h>
+#include <unordered_set>
+#include <bits/stdc++.h> //stl
+
 
 using namespace std;
 
@@ -16,7 +20,11 @@ struct Point {
 };
 
 Point inicio(0, 0);
-Point fin(3, 5);
+Point fin(3,7 );
+
+//heuristic euclidian distance
+inline float heuristic(int x ,int y) {return sqrt(pow(fin.x - x,2) + pow(fin.y - y,2));}
+
 
 
 template <class N, class E>
@@ -26,7 +34,14 @@ struct Node
     E x = 0;
     E y = 0;
     N DtO = 0;
+    N Fn = 0;
+    N Gn = 0;
+    Node<N,E> * cameFrom = 0;
     list<Node<N, E>*> edges;
+
+    void getEdgeValue(){
+
+    }
 
     Node(E x1, E y1, E _id, N _distance)
     {
@@ -35,12 +50,23 @@ struct Node
         id = _id;
         DtO = _distance;
     }
-    Node(E x1, E y1)
+    Node(E x1, E y1 )
     {
         x = x1;
         y = y1;
-        id = 0;
-        DtO = 0;
+        id = Fn = 0;
+        Gn = 9999999999;
+        DtO = heuristic(x1,y1);
+        cameFrom = 0;
+    }
+};
+
+// compare functor to priority queue
+struct CmpNodePtrs
+{
+    bool operator()(const Node<float,int>* a, const Node<float,int>* b) const
+    {
+        return a->Fn < b->Fn;
     }
 };
 
@@ -48,6 +74,8 @@ template <class N, class E>
 struct Graph
 {
     list<Node<N, E>*> Nodes;
+
+
 
     bool insertNode(Node<N, E>* newNode)
     {
@@ -70,7 +98,6 @@ struct Graph
 
     typedef vector<Node<float, int>*> Route;
     typedef pair<Node<float, int>*, Route> Node1;
-
 
     //DFS as the name says   ._.
     void dfs() {
@@ -95,10 +122,9 @@ struct Graph
             Stack1.pop();
 
             if (temp.first->x == fin.x && temp.first->y == fin.y) {
-                for (auto i : temp.second) {
+                for (auto i : temp.second)
                     cout << "(" << i->x << "," << i->y << ") -> ";
-                }
- 
+                cout << "(" << fin.x << "," << fin.y << ")  ";
                 return;
             }
 
@@ -125,14 +151,99 @@ struct Graph
 
     }
 
+
+    float weightEdge(Node<N,E>* a , Node<N,E>* b){
+        return ((a->x - b->x) * (a->y -b->y))? sqrt(2) : 1;
+    }
+
+
+    bool existNodeInQueue( priority_queue< Node<N,E>* , vector<Node<N,E>*>, CmpNodePtrs> temp , Node<N,E>* node){
+
+        while (!temp.empty()) {
+            if(  temp.top() == node ){
+                return 1;
+            }
+            temp.pop();
+        }
+
+        return 0;
+    }
+
+
+
+
+    void A_Start(){
+
+        priority_queue< Node<N,E>* , vector<Node<N,E>*>, CmpNodePtrs> openList;
+        unordered_set<Node<N,E>*> explored;
+
+        Node<float, int>* temp;//Node1 inicio;
+        for (typename::list<Node<N, E>*>::iterator it = Nodes.begin(); it != Nodes.end(); ++it) {
+            if ((*it)->x == inicio.x && (*it)->y == inicio.y) {
+                temp = (*it);
+               break;
+            }
+        }
+
+        //put the first node in the open list
+        openList.push(temp);
+
+        //calculate the cost function
+        //F(n) = g(n) + h(n)
+        (*Nodes.begin())->Gn = 0;
+        (*Nodes.begin())->Fn = (*Nodes.begin())->Gn + (*Nodes.begin())->DtO;
+
+
+        while(!openList.empty() )
+        {
+
+            //take the node with the smallest value of F(n)
+            Node<N,E>* current = openList.top();
+
+            if( current->x == fin.x && current->y == fin.y)
+            {
+                cout<<"\nA* \n Route: \n";
+                stack<Node<N,E>*> path;
+                for( ; current ; current = current->cameFrom) path.push(current);
+                for( ; !path.empty() ; path.pop()) cout << "-> (" << path.top()->x << "," << path.top()->y << ")  ";
+                break;
+            }
+
+            openList.pop();
+
+            //get children of n
+            for ( auto it = current->edges.begin() ; it != current->edges.end() ; it++)
+            {
+
+                float tentative_Gn = current->Gn + weightEdge(current,*it);
+                float neig_GN = (*it)->Gn;
+
+                if( tentative_Gn < (*it)->Gn){
+                    (*it)->cameFrom = current;
+                    (*it)->Gn = tentative_Gn;
+                    (*it)->Fn = tentative_Gn + (*it)->DtO;
+
+                    if(!existNodeInQueue(openList,*it)){
+                        openList.push(*it);
+                    }
+                }
+
+            }
+
+        }
+
+    }
+
+
 };
+
 
 
 void tester(Graph<float, int> graph)
 {
     //Printer of Remaning Nodes             ########test########
     for (list<Node<float, int>*>::iterator it = graph.Nodes.begin(); it != graph.Nodes.end(); ++it) {
-        cout << (*it)->x << "," << (*it)->y << endl;
+        cout << (*it)->x << "," << (*it)->y << " [ "<< (*it)->DtO <<" ]" << endl;
     }
 }
 
@@ -210,7 +321,17 @@ void Connector(Graph<float, int> graph)
 
 }
 
+void PrintExecutionTime(time_t start , time_t end){
+    double time_taken = double(end - start);
+    cout << "\nTime taken by program is : " << fixed
+         << time_taken << setprecision(5);
+    cout << " sec " ;
+}
+
+
+
 int main() {
+
 
     Graph<float, int> graph;
 
@@ -238,7 +359,7 @@ int main() {
     tester(graph);
 
     Connector(graph);
-    
+
 
     int y;
     cout << "Insert % to Delete: ";
@@ -253,10 +374,23 @@ int main() {
     //Eliminador
     Del_node(x, Rows, Columns, graph);
 
+    //measure execution Time
+    time_t start, end;
 
     cout << endl;
     cout << "----------------------------------------------------------" << endl;
+    time(&start);
     graph.dfs();
+    time(&end);
+    PrintExecutionTime(start,end);
+
+    cout << "\n----------------------------------------------------------\n";
+    time(&start);
+    graph.A_Start();
+    time(&end);
+    PrintExecutionTime(start,end);
+
+    cout << "\n----------------------------------------------------------\n";
     cout << endl;
 
     return 0;
