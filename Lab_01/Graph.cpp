@@ -214,9 +214,7 @@ struct Graph
             //get children of n
             for ( auto it = current->edges.begin() ; it != current->edges.end() ; it++)
             {
-
                 float tentative_Gn = current->Gn + weightEdge(current,*it);
-                float neig_GN = (*it)->Gn;
 
                 if( tentative_Gn < (*it)->Gn){
                     (*it)->cameFrom = current;
