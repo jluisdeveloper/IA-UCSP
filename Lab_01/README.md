@@ -2,7 +2,7 @@
 
 ## Requerimientos e instalación
 
-- Instalr compilador g++ >=9.4.0
+- Instalar compilador g++ >=9.4.0
 
 ```bash
 sudo apt install g++
