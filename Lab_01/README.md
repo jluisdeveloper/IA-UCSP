@@ -14,3 +14,4 @@ sudo apt install g++
   - DFS
 - Busqueda Heuristica
   - A*
+  - Best First
