@@ -314,7 +314,7 @@ void tester(Graph<float, int> graph)
   // Printer of Remaning Nodes             ########test########
   for (list<Node<float, int> *>::iterator it = graph.Nodes.begin(); it != graph.Nodes.end(); ++it)
   {
-    cout << (*it)->x << "," << (*it)->y << " [ " << (*it)->DtO << " ]" << endl;
+    cout << (*it)->x << "," << (*it)->y  << endl;
   }
 }
 
