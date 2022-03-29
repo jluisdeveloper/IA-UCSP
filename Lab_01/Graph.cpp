@@ -1,5 +1,14 @@
 //#include <GL/glut.h>  OPEN GL WITH GLUT
-#include <bits/stdc++.h> //stl
+#include <iostream>
+#include <list>
+#include <stack>
+#include <algorithm>
+#include <vector>
+#include <ctime>
+#include <math.h>
+#include <iomanip>
+#include <queue>
+#include <unordered_set>
 
 using namespace std;
 
