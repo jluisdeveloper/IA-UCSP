@@ -10,5 +10,4 @@ Este es el repositorio donde se subirán los trabajos para el curso de Inteligen
 
 - Jorge Luis Huanca Mamani
 
-- Miguel Motta Vilca
 
