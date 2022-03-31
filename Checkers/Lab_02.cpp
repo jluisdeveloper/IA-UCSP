@@ -6,16 +6,16 @@ using namespace std;
 int maxDepth;
 
 
-    int tablero[8][8] = {
-   {0, -1, 0, -1, 0, -1, 0, -1},
-   {-1, 0, -1, 0, -1, 0, -1, 0},
-   {0, -1, 0, -1, 0, -1, 0, -1},
-   {0, 0, 0, 0, 0, 0, 0, 0},
-   {0, 0, 0, 0, 0, 0, 0, 0},
-   {1, 0, 1, 0, 1, 0, 1, 0},
-   {0, 1, 0, 1, 0, 1, 0, 1},
-   {1, 0, 1, 0, 1, 0, 1, 0}
- };
+int tablero[8][8] = {
+{0, -1, 0, -1, 0, -1, 0, -1},
+{-1, 0, -1, 0, -1, 0, -1, 0},
+{0, -1, 0, -1, 0, -1, 0, -1},
+{0, 0, 0, 0, 0, 0, 0, 0},
+{0, 0, 0, 0, 0, 0, 0, 0},
+{1, 0, 1, 0, 1, 0, 1, 0},
+{0, 1, 0, 1, 0, 1, 0, 1},
+{1, 0, 1, 0, 1, 0, 1, 0}
+};
 
 
 
@@ -36,20 +36,48 @@ struct Nodo {
         depth = d;
         copiar(CurBoard, c);
         minimize = depth & 1;
-    }    
+    }
 
 };
 
 
-void PrintTablero() {
+/*void PrintTablero() {
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < 8; ++j)
             cout << tablero[i][j] << "\t";
 
         cout << endl;
     }
-}
+}*/
 
+void printChevere()
+{
+    int rr, cc, pp;
+
+    cout<<("  +---.---.---.---.---.---.---.---+\n");
+
+    for (rr = 0; rr < 8; ++rr)
+    {
+        cout<<("%d |", rr);
+        for (cc = 0; cc < 8; ++cc)
+        {
+            if (tablero[rr][cc] == 1) 
+                cout << " # |";
+            
+            if (tablero[rr][cc] == -1) 
+                cout << " $ |";
+            
+            if (tablero[rr][cc] == 0) 
+                cout << "   |";
+            
+
+        }
+        cout<<("\n");
+        cout<<("  +---.---.---.---.---.---.---.---+\n");
+    }
+
+    cout<<("    0   1   2   3   4   5   6   7\n");
+}
 
 
 
@@ -70,10 +98,10 @@ int main() {
             //agregar if                    ######
 
 
-            PrintTablero();
+            printChevere();
 
 
-            Player = (!Player);
+            break;
         } //fin del while
     }
 
