@@ -18,4 +18,4 @@ sudo apt install g++
   - Best First
 
 
-![Imagen de Codigo 30x30](https://github.com/jluisdeveloper/IA-UCSP/blob/main/Lab_01/IA%20Busqueda.png)
+
