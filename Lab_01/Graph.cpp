@@ -19,6 +19,7 @@ struct Point
   Point() { x = y = 0; }
 };
 
+long long steps;
 Point inicio(0, 0);
 Point fin(3, 7);
 
@@ -64,7 +65,7 @@ struct CmpNodePtrs
 {
   bool operator()(const Node<float, int> *a, const Node<float, int> *b) const
   {
-    return a->Fn < b->Fn;
+    return a->Fn > b->Fn;
   }
 };
 
@@ -72,10 +73,14 @@ template <class N, class E>
 struct Graph
 {
   list<Node<N, E> *> Nodes;
+  Node<N,E>* inicio_ptr;
 
   bool insertNode(Node<N, E> *newNode)
   {
     Nodes.push_back(newNode);
+    if (newNode->x == inicio.x && newNode->y == inicio.y) {
+        inicio_ptr = newNode;
+    }
     return 1;
   }
 
@@ -102,15 +107,7 @@ struct Graph
          << endl;
     cout << "Route\n\n: ";
     Route r;
-    Node<float, int> *temp; // Node1 inicio;
-    for (typename ::list<Node<N, E> *>::iterator it = Nodes.begin(); it != Nodes.end(); ++it)
-    {
-      if ((*it)->x == inicio.x && (*it)->y == inicio.y)
-      {
-        temp = (*it);
-        break;
-      }
-    }
+    Node<float, int> *temp = inicio_ptr; // Node1 inicio;
 
     Node1 n(temp, r);
     stack<Node1> Stack1;
@@ -157,85 +154,95 @@ struct Graph
 
   float weightEdge(Node<N, E> *a, Node<N, E> *b)
   {
-    return ((a->x - b->x) * (a->y - b->y)) ? sqrt(2) : 1;
+    return ((a->x - b->x) * (a->y - b->y) !=0) ? sqrt(2) : 1;
   }
 
   bool existNodeInQueue(priority_queue<Node<N, E> *, vector<Node<N, E> *>, CmpNodePtrs> temp, Node<N, E> *node)
   {
-
-    while (!temp.empty())
-    {
-      if (temp.top() == node)
-      {
-        return 1;
-      }
-      temp.pop();
+        while (!temp.empty())
+        {
+            if (temp.top() == node)
+            {
+                steps ++;
+                return 1;
+            }
+            temp.pop();
+            steps++;
+        }
+        return 0;
     }
-
-    return 0;
-  }
 
   void A_Start()
   {
+    steps = 0;
 
     priority_queue<Node<N, E> *, vector<Node<N, E> *>, CmpNodePtrs> openList;
-    unordered_set<Node<N, E> *> explored;
+    unordered_set<Node<N, E> *> aux;
 
-    Node<float, int> *temp; // Node1 inicio;
-    for (typename ::list<Node<N, E> *>::iterator it = Nodes.begin(); it != Nodes.end(); ++it)
-    {
-      if ((*it)->x == inicio.x && (*it)->y == inicio.y)
-      {
-        temp = (*it);
-        break;
-      }
-    }
+    Node<float, int> *temp = inicio_ptr; // Node1 inicio;
 
     // put the first node in the open list
     openList.push(temp);
+    aux.insert(temp);
+
 
     // calculate the cost function
     // F(n) = g(n) + h(n)
     (*Nodes.begin())->Gn = 0;
     (*Nodes.begin())->Fn = (*Nodes.begin())->Gn + (*Nodes.begin())->DtO;
 
+    steps  +=7;
     while (!openList.empty())
     {
 
       // take the node with the smallest value of F(n)
       Node<N, E> *current = openList.top();
+      steps++;
 
       if (current->x == fin.x && current->y == fin.y)
       {
+        steps++;
         cout << "\nA* \n Route: \n";
         stack<Node<N, E> *> path;
         for (; current; current = current->cameFrom)
-          path.push(current);
+        path.push(current);
         for (; !path.empty(); path.pop())
-          cout << "-> (" << path.top()->x << "," << path.top()->y << ")  ";
+        cout << "-> (" << path.top()->x << "," << path.top()->y << ")  ";
+        cout<<"\nPasos: "<<steps;
         break;
       }
 
       openList.pop();
+      steps++;
 
       // get children of n
       for (auto it = current->edges.begin(); it != current->edges.end(); it++)
       {
+
+        auto itt = *it;
+        int xx = (*it)->x;
+        int yy = (*it)->y;
         float tentative_Gn = current->Gn + weightEdge(current, *it);
+        steps+=4;
 
         if (tentative_Gn < (*it)->Gn)
         {
-          (*it)->cameFrom = current;
-          (*it)->Gn = tentative_Gn;
-          (*it)->Fn = tentative_Gn + (*it)->DtO;
+            (*it)->cameFrom = current;
+            (*it)->Gn = tentative_Gn;
+            (*it)->Fn = tentative_Gn + (*it)->DtO;
+            steps +=3;
 
-          if (!existNodeInQueue(openList, *it))
-          {
-            openList.push(*it);
-          }
+            if (!existNodeInQueue(openList, *it))
+            {
+                openList.push(*it);
+                steps++;
+            }
         }
+
       }
+
     }
+
   }
 
   void BestFirst()
@@ -247,15 +254,7 @@ struct Graph
     cout << "Route: " << endl
          << endl;
     Route r;
-    Node<float, int> *temp; // Node1 inicio;
-    for (typename ::list<Node<N, E> *>::iterator it = Nodes.begin(); it != Nodes.end(); ++it)
-    {
-      if ((*it)->x == inicio.x && (*it)->y == inicio.y)
-      {
-        temp = (*it);
-        break;
-      }
-    }
+    Node<float, int> *temp = inicio_ptr; // Node1 inicio;
 
     Node1 n(temp, r);
     stack<Node1> _stack;
@@ -408,10 +407,10 @@ void Connector(Graph<float, int> graph)
 
 void PrintExecutionTime(time_t start, time_t end)
 {
-  double time_taken = double(end - start);
+  double time_taken = double(end - start) / CLOCKS_PER_SEC;
   cout << "\nTime taken by program is : " << fixed
-       << time_taken << setprecision(5);
-  cout << " sec ";
+       << time_taken ;
+  cout << " milisec ";
 }
 
 int main()
@@ -419,7 +418,7 @@ int main()
 
   Graph<float, int> graph;
 
-  int Columns, Rows;
+  int Columns , Rows ;
   cout << "Insert Rows: ";
   cin >> Rows;
   cout << endl
