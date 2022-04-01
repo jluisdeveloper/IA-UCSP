@@ -167,6 +167,7 @@ struct Graph
             }
         }
         Node1 n(tem, r);
+        int counter = 0;
         queue<Node1> myqueue;
         myqueue.push(n);
 
@@ -178,11 +179,13 @@ struct Graph
                 for (auto i : temp.second)
                     cout << "(" << i->x << "," << i->y << ") -> ";
                 cout << "(" << fin.x << "," << fin.y << ")  ";
+                cout << "\n\nPasos: " << counter << "\n";
                 return;
             }
             for (typename ::list<Node<N, E>*>::iterator it = temp.first->edges.begin(); it != temp.first->edges.end(); ++it) {
                 bool aux = false;
                 for (auto j : temp.second) {
+                    counter++;
                     if ((*it) == j) {
                         aux = true;
                         break;
@@ -300,6 +303,7 @@ struct Graph
         cout << endl;
         cout << "Route: " << endl
             << endl;
+        int counter = 0;
         Route r;
         Node<float, int>* temp = inicio_ptr; // Node1 inicio;
 
@@ -320,6 +324,7 @@ struct Graph
                     cout << "(" << i->x << "," << i->y << ") -> ";
                 }
                 cout << "(" << fin.x << "," << fin.y << ")  ";
+                cout << "\n\nPasos: " << counter << "\n";
                 return;
             }
 
@@ -331,6 +336,7 @@ struct Graph
 
                 for (auto j : aux.second)
                 {
+                    counter++;
                     if ((*ar) == j)
                     {
                         encontrado = true;
