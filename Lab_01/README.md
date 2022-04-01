@@ -12,9 +12,10 @@ sudo apt install g++
 
 - Busqueda Ciega
   - DFS
+  - BFS
 - Busqueda Heuristica
   - A*
   - Best First
 
 
-![Imagen de Codigo 30x30](https://github.com/warrormac/IA-UCSP-1/blob/main/Lab_01/IA%20Busqueda.png)
+![Imagen de Codigo 30x30](https://github.com/jluisdeveloper/IA-UCSP/blob/main/Lab_01/IA%20Busqueda.png)
