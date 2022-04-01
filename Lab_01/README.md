@@ -12,6 +12,7 @@ sudo apt install g++
 
 - Busqueda Ciega
   - DFS
+  - BFS
 - Busqueda Heuristica
   - A*
   - Best First

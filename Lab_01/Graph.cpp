@@ -152,6 +152,50 @@ struct Graph
     }
   }
 
+  void bfs(){
+    cout << "\nBFS\n\n";
+    cout << "Route\n\n";
+    Route r;
+    Node<float, int> *tem;
+    for (typename ::list<Node<N, E> *>::iterator it = Nodes.begin(); it != Nodes.end(); ++it){
+      if ((*it)->x == inicio.x && (*it)->y == inicio.y){
+        tem = (*it);
+        break;
+      }
+    }
+    Node1 n(tem,r);
+    queue<Node1> myqueue ;
+    myqueue.push(n);
+
+    while(!myqueue.empty()){
+      Node1 temp;
+      temp = myqueue.front();
+      myqueue.pop();
+      if (temp.first->x == fin.x && temp.first->y == fin.y){
+        for (auto i : temp.second)
+          cout << "(" << i->x << "," << i->y << ") -> ";
+        cout << "(" << fin.x << "," << fin.y << ")  ";
+        return;
+      }
+      for(typename ::list<Node<N, E> *>::iterator it = temp.first->edges.begin(); it != temp.first->edges.end(); ++it){
+        bool aux = false;
+        for (auto j : temp.second){
+          if ((*it) == j){
+            aux = true;
+            break;
+          }
+        }
+        if(!aux){
+          Node1 tem ;
+          tem.second = temp.second;
+          tem.second.push_back(temp.first);
+          tem.first = (*it);
+          myqueue.push(tem);
+        }
+      }
+    }
+  }
+
   float weightEdge(Node<N, E> *a, Node<N, E> *b)
   {
     return ((a->x - b->x) * (a->y - b->y) !=0) ? sqrt(2) : 1;
@@ -459,15 +503,19 @@ int main()
   // measure execution Time
   time_t start, end;
 
-  cout << endl;
-  cout << "----------------------------------------------------------" << endl;
+  cout << "\n----------------------------------------------------------\n";
   time(&start);
   graph.dfs();
   time(&end);
   PrintExecutionTime(start, end);
 
-  cout << endl;
-  cout << "----------------------------------------------------------" << endl;
+  cout << "\n----------------------------------------------------------\n";
+  time(&start);
+  graph.bfs();
+  time(&end);
+  PrintExecutionTime(start, end);
+
+  cout << "\n----------------------------------------------------------\n";
   time(&start);
   graph.BestFirst();
   time(&end);
