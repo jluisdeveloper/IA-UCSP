@@ -84,6 +84,7 @@ void printChevere()
 
 int main() {
 
+
     bool Player;
     cout << "Quien empieza el juego? \n 0 = computadora,  1 = Player: ";
     cin >> Player;
