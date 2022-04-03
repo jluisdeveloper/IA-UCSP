@@ -58,6 +58,8 @@ struct GameTree{
     }
 
     void checkPossibilities(int player ,int ii , int jj , vector<pair<int,int>> & moves){
+        //check 2 possible moves depending of the type of player
+        // AI = -1 ; Human = 1
         int i = player * -1;
         for (int j = -1 ; j <=1 ; j+=2) {
             if( ii+i >=0 && ii+i <= 7 && jj+j>=0 && jj+j<= 7){
@@ -66,24 +68,49 @@ struct GameTree{
         }
     }
 
+    void swap(int ){
+
+    }
+
     void makeGameTree(Nodo* _node,int _depth, int player){
         if( _depth == 0 || isTerminal(_node)){
             return ;
         }
 
-        int newBoard [8][8];
-
-        // AI is -1  Human 1
-        for (int i = 0; i < 8; ++i){
-            for (int j = 0; j < 8; ++j){
-                if(_node->Board[i][j] == player){
+        // check possibilities for each piece
+        for (int i = 0; i < 8; ++i)
+        {
+            for (int j = 0; j < 8; ++j)
+            {
+                //find piece
+                if(_node->Board[i][j] == player)
+                {
                     vector<pair<int,int>> possibleMoves ;
                     checkPossibilities(player , i,j, possibleMoves);
-                    for (int i = 0 ; possibleMoves.size() ;i++) {
+
+                    //create possibilities childs
+                    for (int k = 0 ; k < possibleMoves.size() ;k++) {
+                        int newBoard[8][8];
+                        copiar(newBoard, _node->Board);
+
+                        int row = possibleMoves[i].first;
+                        int col = possibleMoves[i].second;
+
+                        //swap
+                        int aux = newBoard[row][col];
+                        newBoard[row][col] = newBoard[i][j];
+                        newBoard[i][j] = aux;
+
+                        //create child
+                        Nodo* child = new Nodo(newBoard);
+                        _node->children.push_back(child);
+
+                        makeGameTree(child,_depth - 1 , player*-1);
 
                     }
                 }
-                _node->Board[i][j] = newBoard[i][j];
+
+
             }
         }
 
