@@ -2,6 +2,8 @@
 #include <vector>
 #include <list>
 #include <tuple>
+#include <limits>
+#include <stdio.h>
 
 using namespace std;
 #define INF 12345
@@ -20,12 +22,23 @@ int tablero[8][8] = {
 };
 
 
+int tablero2[8][8] = {
+        {0, -1, 0, -1, 0, -1, 0, -1},
+        {-1, 0, -1, 0, 0, 0, -1, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, -1, 0, 0, 0, 0, 0, 0},
+        {0, 0, 1, 0, 1, 0, 1, 0},
+        {0, 0, 0, 0, 0, 1, 0, 1},
+        {1, 0, 1, 0, 1, 0, 1, 0}
+};
+
+
 
 void copiar(int t1[8][8], int t2[8][8]) {
     for (int i = 0; i < 8; ++i){
         for (int j = 0; j < 8; ++j){
             t1[i][j] = t2[i][j];
-
         }
     }
 }
@@ -34,11 +47,11 @@ void printChevere(int tablero[8][8])
 {
     int rr, cc, pp;
 
-    cout<<("  +---.---.---.---.---.---.---.---+\n");
+    cout<<(" +---.---.---.---.---.---.---.---+\n");
 
     for (rr = 0; rr < 8; ++rr)
     {
-        cout<<("%d |", rr);
+        cout<<rr<<"|";
         for (cc = 0; cc < 8; ++cc)
         {
             if (tablero[rr][cc] == 1)
@@ -53,7 +66,7 @@ void printChevere(int tablero[8][8])
 
         }
         cout<<("\n");
-        cout<<("  +---.---.---.---.---.---.---.---+\n");
+        cout<<(" +---.---.---.---.---.---.---.---+\n");
     }
 
     cout<<("    0   1   2   3   4   5   6   7\n");
@@ -65,9 +78,11 @@ void printChevere(int tablero[8][8])
 struct Nodo {
 
     int Board[8][8];
+    int eval;
+
     list<Nodo*> children;
 
-    Nodo(int c[8][8]) {
+    Nodo(int c[8][8] ) {
         copiar(Board, c);
     }
 };
@@ -79,13 +94,22 @@ struct GameTree{
 
     Nodo* root = 0;
     int depth;
-    bool max;
+    bool maximize ;
+    int player;
 
-    GameTree(int board[8][8] , int depth, bool max){
+    GameTree(int board[8][8] , int _depth , int _player , bool _maximize)
+    {
         root = new Nodo(board);
-        this->depth = depth;
-        this->max = depth & 1;
+        this->depth = _depth;
+        this->maximize = _maximize;
+        this->player = _player;
+
+        //make posibilities tree
+        makeGameTree(root,depth,player);
     }
+
+
+
 
     bool isTerminalNode(Nodo* node){
         int AI = 0,Human = 0;
@@ -148,13 +172,14 @@ struct GameTree{
         //no node exist
         if(!_node) return;
 
-        cout<<"\nBoard: "<<depth<<"\n";
-        printChevere(_node->Board);
-        cout<<"\n-----------------------------------------------------------------------------------------";
+//        cout<<"\nBoard: "<<_depth<<"\n";
+//        printChevere(_node->Board);
+//        cout<<"\n-----------------------------------------------------------------------------------------";
 
         if( _depth == 0 || isTerminalNode(_node)){
             return ;
         }
+
 
         // check possibilities for each piece
         for (int i = 0; i < 8; ++i)
@@ -202,9 +227,94 @@ struct GameTree{
 
     }
 
+    int evaluation(Nodo * node){
+
+        int AI = 0,Human = 0;
+        for (int i = 0; i < 8; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                AI += (node->Board[i][j] == -1);
+                Human += (node->Board[i][j] == 1);
+            }
+        }
+
+        if(!Human) return 99999;
+
+        return AI - Human ;
+    }
+
+
+
+
+    Nodo* miniMax(Nodo * _node , int _depth , bool maximize)
+    {
+
+        if(!_node){
+            return 0;
+        }
+//
+//        cout<<"\nBoard: "<<_depth<<"\n";
+//        printChevere(_node->Board);
+//        cout<<"\n-----------------------------------------------------------------------------------------";
+
+        if( _depth == 0 || isTerminalNode(_node)){
+//            cout<<"\neval: "<<evaluation(_node);
+            _node->eval = evaluation(_node);
+            return _node;
+        }
+
+
+
+        if( maximize){
+
+            int maxEva = std::numeric_limits<int>::min(); // -infinity
+
+            for (auto it = _node->children.begin() ; it != _node->children.end(); it++)
+            {
+                int eva = miniMax(*it,_depth - 1 , 0)->eval;
+                _node->eval = maxEva= max(maxEva,eva);
+            }
+
+            return _node;
+
+        }else{
+
+            int minEva = std::numeric_limits<int>::max(); // +infinity
+
+            for (auto it = _node->children.begin() ; it != _node->children.end(); it++)
+            {
+                int eva = miniMax(*it,_depth - 1 , 1)->eval;
+                _node->eval =  minEva = min(minEva,eva);
+            }
+
+            return _node;
+        }
+
+    }
+
+
+
 };
 
 
+ void  getOptimalMovement(int board[8][8] , int newBoard[8][8] , int depth,int player , bool maximize ){
+
+    GameTree t(board,depth,player,maximize);
+
+    Nodo* n = t.miniMax(t.root,depth,maximize);
+
+//    cout<<"\neval: "<<n->eval;
+
+     for (auto it = t.root->children.begin() ; it != t.root->children.end(); it++)
+     {
+         if((*it)->eval == t.root->eval){
+             copiar (newBoard , (*it)->Board);
+//             cout<<"\nDespues: \n";
+//             printChevere((*it)->Board);
+             break;
+         }
+     }
+
+}
 
 
 
@@ -219,36 +329,73 @@ struct GameTree{
 }*/
 
 
+bool isValidPosition(int i ,int j){
+    return i >= 0 && i <=7 && j>=0 && j<=7;
+}
 
 
 
 int main() {
 
 
+    int Player;
+    bool End = 0;
 
-    GameTree t(tablero,2,1);
-    t.makeGameTree(t.root,2,-1);
+    cout << "Quien empieza el juego? \n -1 = computadora,  1 = Player: ";
+    cin >> Player;
+    cout << endl << "Ingrese Profundidad de arbol: ";
+    cin >> maxDepth;
 
-//    bool Player;
-//    cout << "Quien empieza el juego? \n 0 = computadora,  1 = Player: ";
-//    cin >> Player;
-//    cout << endl << "Ingrese Profundidad de arbol: ";
-//    cin >> maxDepth;
-//
-//    while (true) {
-//
-//        if (Player) {//movimiento Player
-//            int x_i, y_i, x_f, y_f;
-//
-//            //agregar if                    ######
-//
-//
-//            printChevere(tablero);
-//
-//
-//            break;
-//        } //fin del while
-//    }
+    printChevere(tablero);
+
+    while (!End) {
+
+        if (Player)
+        {
+            //movimiento Player
+
+            int i_1, i_2, j_1, j_2;
+            int board[8][8];
+            cout<<"\n ** AI ... ***\n";
+            getOptimalMovement(tablero,board,maxDepth,Player, 1);
+            printChevere(board);
+
+            Human:
+            cout<<"\n ** Human ... ***\n";
+            cout<<"Ingresar Origen (fila,columna) > ";
+            cin>>i_1>>j_1;
+            cout<<"Ingresa Destino (fila, columna) > ";
+            cin>>i_2>>j_2;
+
+            if(isValidPosition(i_2,j_2) && board[i_2][j_2] == 0){
+
+
+                board[i_1][j_1] = 0;
+                board[i_2][j_2] = 1;
+
+                if( (i_2-i_1) % 2 == 0 && (j_2-j_1 % 2) == 0){
+                    //eat
+                    int i_AI = i_1 + (i_2-i_1)/2 ;
+                    int j_AI = j_1 + (j_2-j_1)/2 ;
+
+                    if(isValidPosition(i_AI,j_AI) && board[i_AI][j_AI] == -1){
+                        board[i_AI][j_AI] = 0;
+                    }
+                }
+
+                copiar(tablero,board);
+
+                cout<<"\n ** Human ... ***\n";
+                printChevere(tablero);
+            }else{
+                cout<<"\nIngrese una coordenada valida ...";
+                goto Human;
+                End = 1;
+            }
+
+
+        } //fin del while
+    }
 
 
 }
