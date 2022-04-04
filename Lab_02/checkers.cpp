@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+#include <iostream>
 #include "aux_functions.hpp"
 
 using namespace std;
@@ -7,7 +7,7 @@ using namespace std;
 #define INF 12345
 #define EMPTY_SQUARE 0
 
-int board[8][8] = {
+/*int board[8][8] = {
   {0, -1, 0, -1, 0, -1, 0, -1},
   {-1, 0, -1, 0, -1, 0, -1, 0},
   {0, -1, 0, -1, 0, -1, 0, -1},
@@ -16,6 +16,17 @@ int board[8][8] = {
   {1, 0, 1, 0, 1, 0, 1, 0},
   {0, 1, 0, 1, 0, 1, 0, 1},
   {1, 0, 1, 0, 1, 0, 1, 0}
+};*/
+
+int board[8][8] = {
+  {0, 0, 0, 0, 0, 0, 0, 0},
+  {0, 0, -1, 0, -1, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0, 0},
+  {0, 1, 0, 1, 0, 1, 0, 1},
+  {0, 0, 0, 0, 0, 0, 0, 0}
 };
 
 pair<int, int> pieces[TOTAL_PIECES];
@@ -206,7 +217,7 @@ void printBoard() {
   }
 
   cout<<("   0   1   2   3   4   5   6   7\n");
-  cout<<'\n';
+  cout<<"\n\n";
 }
 
 bool movePiece(pair<int, int> from, pair<int, int> to) {
@@ -246,11 +257,11 @@ void getWinner() {
   int result = evaluateFunction(board);
 
   if (result < 0)
-    cout << "HUMAN WINNER" << endl;
+    cout << "\nHUMAN WINNER\n" << endl;
   else if (result == 0)
-    cout << "TIED, NO WINNERS" << endl;
+    cout << "\nTIED, NO WINNERS\n" << endl;
   else
-    cout << "COMPUTER WINNER" << endl;
+    cout << "\nCOMPUTER WINNER\n" << endl;
 }
 
 bool calculateMovement() {
@@ -298,13 +309,16 @@ bool optionsHuman() {
 }
 
 int main() {
-  cout << "human start Go..!! Go..!!" << endl;
+  cout << "\n\tDAMAS Go..!! Go..!!\n\n";
+  int Player ;
+  cout << "Quien empieza el juego? \n 0 = computadora,  1 = Player: ";
+  cin >> Player;
   bool turn = 0;
 
   cout << "minMax algorithm loaded!" << endl;
   chooseAlgorithm = 0;
 
-  cout << "depth (0 - 12) ";
+  cout << "depth (0 - 12) : ";
   cin >> maxDepth;
 
   loadPosition();
@@ -318,9 +332,14 @@ int main() {
 
   pair<int, int> move;
   pair<int, int> newMove;
+  if(!Player){
+    keepGoing = calculateMovement();
+    loadPosition();
+    printBoard();
+  }
 
-  while (true) {
-    cout << "enter the position of the part to be moved " << endl;
+  while (keepGoing == true) {
+    cout << "enter the position of the part to be moved (columna , fila)" << endl;
     cin >> move.first >> move.second;
     // checamos si la pieza elegida es del jugador
     if (board[move.second][move.first] == humanPiece ){
@@ -333,7 +352,7 @@ int main() {
     if (movingPiece) {
       movingPiece = false;
 
-      cout << "enter target position " << endl;
+      cout << "enter target position (columna , fila)" << endl;
       cin >> newMove.first >> newMove.second;
 
       newPiecePosition = newMove;
@@ -349,7 +368,6 @@ int main() {
       turn ^= 1;
       }
     }   
-
     printBoard();
 
     if (turn && keepGoing) {
