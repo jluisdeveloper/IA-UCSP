@@ -119,7 +119,43 @@ class Node {
     }
 };
 
+// GAME PARAMETERS AND FUNCTIONS
 
+void trackPieces (){
+  int numPieces = 0;
+  int currentSquare, pivot;
+
+  for (int i = 0; i <= 7; ++i) {
+    for (int j = 0; j <= 7; ++j) {
+      currentSquare = board[i][j];
+      // is free space
+      if (currentSquare == 0) {
+        continue;
+      }
+
+      if (!chooseColor)
+        pivot = (currentSquare > 0) ? 1 : 0;
+      else
+        pivot = (currentSquare < 0) ? 1 : 0;
+
+      ++numPieces;
+
+      cout << "Piece " << numPieces << ": " << i << " " << j << endl;
+    }
+  }
+}
+
+// TEST FUNCTION
+void printBoard() {
+  for (int i = 0; i < 8; ++i) {
+    for (int j = 0; j < 8; ++j)
+      cout << board[i][j] << "\t";
+
+    cout << endl;
+  }
+
+  cout << endl;
+}
 
 int main() {
   Node A(board, 3);
@@ -127,6 +163,9 @@ int main() {
 
 
   cout << A.minMax() << endl;
+
+  trackPieces();
+  printBoard();
 
   return 0;
 }
