@@ -66,12 +66,14 @@ void copiar(int t1[8][8], int t2[8][8]) {
 void printChevere(int tablero[8][8])
 {
     int rr, cc, pp;
-
-    cout << (" +---.---.---.---.---.---.---.---+\n");
+    
+    cout<< "\n\n";
+    cout<<("   0   1   2   3   4   5   6   7\n");
+    cout<<(" +---.---.---.---.---.---.---.---+\n");
 
     for (rr = 0; rr < 8; ++rr)
     {
-        cout << rr << "|";
+        cout<<rr<<"|";
         for (cc = 0; cc < 8; ++cc)
         {
             if (tablero[rr][cc] == 1)
@@ -82,14 +84,13 @@ void printChevere(int tablero[8][8])
 
             if (tablero[rr][cc] == 0)
                 cout << "   |";
-
-
         }
-        cout << ("\n");
-        cout << (" +---.---.---.---.---.---.---.---+\n");
+        cout<<rr<<"\n";
+        cout<<(" +---.---.---.---.---.---.---.---+\n");
     }
 
-    cout << ("    0   1   2   3   4   5   6   7\n");
+    cout<<("   0   1   2   3   4   5   6   7\n");
+    cout<<'\n';
 }
 
 
