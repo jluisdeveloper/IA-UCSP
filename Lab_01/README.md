@@ -18,7 +18,7 @@ sudo apt install g++
 
 
 
-![Imagen de Codigo 30x30](https://github.com/warrormac/IA-UCSP-1/blob/main/Lab_01/IA%20Busqueda%202.png)
+![Imagen de Codigo 30x30](https://github.com/warrormac/IA-UCSP-1/blob/main/Lab_01/IA%20Busqueda.png)
 
 
 Cambios Solicitados Posentrega
