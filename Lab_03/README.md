@@ -1,4 +1,4 @@
-# Laboratorio ... 
+# Laboratorio Algoritmos Genéticos
 
 ## Requerimientos e instalación
 

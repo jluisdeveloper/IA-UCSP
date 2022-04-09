@@ -5,33 +5,33 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import networkx as nx
 import math
+from scipy.spatial import distance
 
 
-class Calculo:                       ################################################################################
+#El gen es la ciudad
+class Ciudad:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
-    def Dis_Euc(self, calculo):     ################################################################################
-        xDis = abs(self.x - calculo.x)
-        yDis = abs(self.y - calculo.y)
+    def Dis_Euc(self, ciudad):
+        currentCity = (self.x, self.y)
+        neighbourCity = (ciudad.x, ciudad.y)
+        return distance.euclidean(currentCity, neighbourCity)
 
-        Dis_Euc = (xDis ** 2) + (yDis ** 2)
-        Dis_Euc = np.sqrt(Dis_Euc)
-        return Dis_Euc
-
-    def __repr__(self):             ################################################################################
+    def __repr__(self):
         return "(" + str(self.x) + "," + str(self.y) + ")"
 
 
-class Fitness:
+#El cromosoma es la Ruta
+class Ruta:
     def __init__(self, route):
         self.route = route
         self.Dis_Euc = 0
         self.fitness = 0.0
 
         
-    def Cal_Rut(self):              ################################################################################
+    def Distancia(self):
         if self.Dis_Euc == 0:
             camino = 0
             for i in range(0, len(self.route)):
@@ -46,42 +46,48 @@ class Fitness:
             self.Dis_Euc = camino
         return self.Dis_Euc
 
-    def routeFitness(self):
+    #nos importa la menor distancia
+    def Fitness(self):
         if self.fitness == 0:
-            self.fitness = 1 / float(self.Cal_Rut())
+            self.fitness = self.Distancia()
         return self.fitness
 
-
-def Crear_Rut(lista):               ################################################################################
-    route = random.sample(lista, len(lista))
-
+#crea una ruta aleatoria 
+def Crear_Rut(ciudades):
+    route = random.sample(ciudades, len(ciudades))
     return route
 
-
-def Original(popSize, lista):       ################################################################################
+#inicia la poblacion de rutas posibles  de las ciudades 
+def iniciarPoblacion(popSize, ciudades):
     population = []
     for i in range(0, popSize):
-        population.append(Crear_Rut(lista))
+        population.append(Crear_Rut(ciudades))
     global firstEverRoute
     firstEverRoute = population[popSize - 1]
     return population
 
-
-def Ranking(population):            ################################################################################
+#Realiza un rankin para obtener las distancias de rutas  de forma ascendente 
+def Ranking(population):
     Fresult = {}
     for i in range(0, len(population)):
-        Fresult[i] = Fitness(population[i]).routeFitness()
-    return sorted(Fresult.items(), key=operator.itemgetter(1), reverse=True)
+        Fresult[i] = Ruta(population[i]).Fitness()
+    return sorted(Fresult.items(), key=operator.itemgetter(1), reverse=False)
 
-
-def Elegir(popRanked, TamE):
+#Seleccionamos a los padres por elitismo y probabilidad
+#la funcion retorna los IDs de las padres(rutas)
+def seleccion(popRanked, eliteSize):
     Sresult = []
+    #definimos la ruleta
     df = pd.DataFrame(np.array(popRanked), columns=["Idx", "Fitness"])
     df['cum_sum'] = df.Fitness.cumsum()
     df['cum_perc'] = 100 * df.cum_sum / df.Fitness.sum()
-    for i in range(0, TamE):
+    
+    #Por elitismo se escoge las rutas mas optimas
+    for i in range(0, eliteSize):
         Sresult.append(popRanked[i][0])
-    for i in range(0, len(popRanked) - TamE):
+    
+    #Elegimos por probabilidad los  posibles padres
+    for i in range(0, len(popRanked) - eliteSize):
         pick = 100 * random.random()
         for i in range(0, len(popRanked)):
             if pick <= df.iat[i, 3]:
@@ -90,15 +96,15 @@ def Elegir(popRanked, TamE):
     return Sresult
 
 
-def Final(population, Sresult):         ################################################################################
-    matingpool = []
+def getCandidatosPadres(population, Sresult):        
+    padres = []
     for i in range(0, len(Sresult)):
-        temp = Sresult[i]
-        matingpool.append(population[temp])
-    return matingpool
+        index = Sresult[i]
+        padres.append(population[index])
+    return padres
 
 
-def Crusando(Padre1, Padre2):         ################################################################################
+def Crusando(Padre1, Padre2):         
     Hijo = []
     HijoP1 = []
     HijoP2 = []
@@ -113,11 +119,11 @@ def Crusando(Padre1, Padre2):         ##########################################
     return Hijo
 
 
-def Crusando_Pue(matingpool, TamE):     ################################################################################
+def Crusando_Poblacion(matingpool, eliteSize):     ################################################################################
     Hijos = []
-    length = len(matingpool) - TamE
+    length = len(matingpool) - eliteSize
     pool = random.sample(matingpool, len(matingpool))
-    for i in range(0, TamE):
+    for i in range(0, eliteSize):
         Hijos.append(matingpool[i])
     for i in range(0, length):
         Hijo = Crusando(pool[i], pool[len(matingpool) - i - 1])
@@ -125,7 +131,7 @@ def Crusando_Pue(matingpool, TamE):     ########################################
     return Hijos
 
 
-def Mescla(individual, mutationRate):   ################################################################################
+def mutar(individual, mutationRate):
     for aux1 in range(len(individual)):
         if (random.random() < mutationRate):
             aux2 = int(random.random() * len(individual))
@@ -136,74 +142,94 @@ def Mescla(individual, mutationRate):   ########################################
     return individual
 
 
-def Mescla_Pueblo(population, mutationRate):  ################################################################################
+def mutarPoblacion(population, mutationRate):
     mutatedPop = []
     for ind in range(0, len(population)):
-        mutatedInd = Mescla(population[ind], mutationRate)
+        mutatedInd = mutar(population[ind], mutationRate)
         mutatedPop.append(mutatedInd)
     return mutatedPop
 
 
 def NextG(currentGen, TamE, mutationRate):
     popRanked = Ranking(currentGen)
-    Sresult = Elegir(popRanked, TamE)
-    matingpool = Final(currentGen, Sresult)
-    Hijos = Crusando_Pue(matingpool, TamE)
-    NextG = Mescla_Pueblo(Hijos, mutationRate)
+    Sresult = seleccion(popRanked, TamE)
+    matingpool = getCandidatosPadres(currentGen, Sresult)
+    Hijos = Crusando_Poblacion(matingpool, TamE)
+    NextG = mutarPoblacion(Hijos, mutationRate)
     return NextG
 
 
 def GA(population, popSize, TamE, mutationRate, generations):
-    pop = Original(popSize, population)
-    Progreso = []
-    MejorR = []
-    Mejor_Dis_Eu = math.inf
-    Progreso.append(1 / Ranking(pop)[0][1])
+    pop = iniciarPoblacion(popSize,population)
+    print("Initial distance: " + str(Ranking(pop)[0][1]))
+
+    progress = []
+    promedio = []
+
+    rankingRoutes = Ranking(pop)
+    print(rankingRoutes)
+
+    progress.append(rankingRoutes[0][1])
+    promedio.append(sum(j for i, j in rankingRoutes)/len(rankingRoutes))
+
+    print(progress)
+    print(promedio)
+
     for i in range(0, generations):
         pop = NextG(pop, TamE, mutationRate)
-        Actual_Eu = 1 / Ranking(pop)[0][1]
-        Progreso.append(Actual_Eu)
-        if (Mejor_Dis_Eu == math.inf or Actual_Eu < Mejor_Dis_Eu):
-            MejorR = pop[Ranking(pop)[0][0]]
-    # print(Progreso[0])
-    plt.figure()
-    plt.plot(Progreso)
-    plt.ylabel('Distancia')
-    plt.xlabel('Generacion')
-    # MejorR = pop[Ranking(pop)[0][0]]
-    return MejorR
+        rankingRoutes = Ranking(pop)
+        progress.append(rankingRoutes[0][1])
+        promedio.append(sum(j for i, j in rankingRoutes)/len(rankingRoutes))
+
+
+    print("Final distance: " + str(Ranking(pop)[0][1]))
+    bestRouteIndex = Ranking(pop)[0][0]
+    bestRoute = pop[bestRouteIndex]
+
+
+    plt.plot(progress)
+    plt.ylabel('Distance')
+    plt.xlabel('Generation')
+    plt.show()
+
+    plt.plot(promedio)
+    plt.ylabel('Promedio')
+    plt.xlabel('Generation')
+    plt.show()
+
+    return bestRoute
+
 
 
 ########################################## main ################################################################
-lista = []
-edge_colors = []
-positions = []
-nroCities = 5
 
-G = nx.Graph()
-for i in range(0, nroCities):
-    lista.append(Calculo(x=int(random.random() * 200), y=int(random.random() * 200)))
-    x = lista[i].x
-    y = lista[i].y
-    positions.append((x, y))
 
-G.add_nodes_from(lista)
-MejorR = GA(population=lista, popSize=80, TamE=20, mutationRate=0.10, generations=500)
-MejorR.append(MejorR[0])
+ciudades= []
 
-for i in range(0, nroCities):
-    for j in range(0, nroCities):
-        edge_colors.append('b')
-        G.add_edge(lista[i], lista[j])
+lenCiudades = 25
 
-Pesos = nx.get_edge_attributes(G, 'weight').values()
-plt.figure(2)
-nx.draw(G, edge_color=edge_colors)
-plt.show()
+#Generamos un numero de ciudades con sus coordenadas aleatorias
+for i in range(0,lenCiudades):
+    ciudades.append(Ciudad(x=int(random.random() * 200), y=int(random.random() * 200)))
 
-for i in range(0, nroCities):
-    x = MejorR[i].x
-    y = MejorR[i].y
-    x_2 = MejorR[i + 1].x
-    y_2 = MejorR[i + 1].y
-    print("Route: (", x, ",", y, ")->(", x_2, ",", y_2, ")")
+
+poblacion = 10
+elitismo = 6
+mutacion = 0.01
+generaciones = 50
+
+GA(ciudades , poblacion, elitismo,mutacion , generaciones)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
