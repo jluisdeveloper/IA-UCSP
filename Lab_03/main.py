@@ -161,41 +161,88 @@ def NextG(currentGen, TamE, mutationRate):
 
 def GA(population, popSize, TamE, mutationRate, generations):
     pop = iniciarPoblacion(popSize,population)
-    print("Initial distance: " + str(Ranking(pop)[0][1]))
-
     progress = []
     promedio = []
 
+    promedio_aux = []
+
     rankingRoutes = Ranking(pop)
-    print(rankingRoutes)
+    # print(rankingRoutes)
 
     progress.append(rankingRoutes[0][1])
     promedio.append(sum(j for i, j in rankingRoutes)/len(rankingRoutes))
 
-    print(progress)
-    print(promedio)
+    # print(progress)
 
+    promedio_aux = [2000 for x in range(0, generations)]
+
+    # print(promedio_aux)
+
+    
+    index = 0
     for i in range(0, generations):
+        coords_x, coords_y = [], []
+        # print((pop[i][0]))
+
+        for i in pop[0]: 
+            coords_x.append(i.x)
+            coords_y.append(i.y)
+
+        #enlazamos el primero al ultimo vertice
+        coords_x.append(pop[0][0].x)
+        coords_y.append(pop[0][0].y)
+
+        # visualizacion de la ruta
+        plt.figure(1)
+        plt.scatter(coords_x, coords_y, color="red")
+        plt.plot(coords_x, coords_y)
+        plt.grid(color="gray", linestyle="--", linewidth=1, alpha=.4)
+        plt.title("Mejor Ruta: Digievolucion ")
+        plt.tight_layout()
+        plt.show(block=False)
+        plt.pause(.5)
+        
+
         pop = NextG(pop, TamE, mutationRate)
         rankingRoutes = Ranking(pop)
         progress.append(rankingRoutes[0][1])
-        promedio.append(sum(j for i, j in rankingRoutes)/len(rankingRoutes))
+        promedio.append(sum(j for i, j in rankingRoutes)/len(rankingRoutes))    
+
+        promedio_aux[(generations-index)-1] = (sum(j for i, j in rankingRoutes)/len(rankingRoutes))    
+
+        print(promedio_aux)
+
+        index += 1
+        # visualizacion de la evolucion de la ruta en promedio
+        plt.figure(2)
+        plt.plot([k for k in range(generations )], promedio_aux)
+        plt.grid(color="gray", linestyle="--", linewidth=1, alpha=.4)
+        plt.title("Distancias promedio VS Generaciones")
+        plt.tight_layout()
+        plt.show(block=False)
+        plt.pause(.5)
+
+        plt.figure(1)
+        plt.clf()
+
+        plt.figure(2)
+        plt.clf()
 
 
-    print("Final distance: " + str(Ranking(pop)[0][1]))
+
     bestRouteIndex = Ranking(pop)[0][0]
     bestRoute = pop[bestRouteIndex]
 
+    # plt.plot(progress)
+    # plt.ylabel('Distance')
+    # plt.xlabel('Generation')
+    # plt.show()
 
-    plt.plot(progress)
-    plt.ylabel('Distance')
-    plt.xlabel('Generation')
-    plt.show()
-
-    plt.plot(promedio)
-    plt.ylabel('Promedio')
-    plt.xlabel('Generation')
-    plt.show()
+    # plt.figure(3)
+    # plt.plot(promedio)
+    # plt.ylabel('Promedio')
+    # plt.xlabel('Generation')
+    # plt.figure(3)
 
     return bestRoute
 
@@ -204,32 +251,31 @@ def GA(population, popSize, TamE, mutationRate, generations):
 ########################################## main ################################################################
 
 
-ciudades= []
+# ciudades2= [(1, 7), (2, 5), (4, 4), (2, 3), (3, 2),
+#             (1, 1), (5, 1), (7, 3), (6, 6), (10, 5),
+#          (9, 8), (13, 6), (12, 3), (13, 1)]
 
-lenCiudades = 25
+ciudades=[]
 
-#Generamos un numero de ciudades con sus coordenadas aleatorias
+lenCiudades = 14
+
+# Generamos un numero de ciudades con sus coordenadas aleatorias
 for i in range(0,lenCiudades):
     ciudades.append(Ciudad(x=int(random.random() * 200), y=int(random.random() * 200)))
 
 
-poblacion = 10
-elitismo = 6
+# para testing 
+# for i in range(0,lenCiudades):
+#     ciudades.append(Ciudad(x=int(ciudades2[i][0]), y=int(ciudades2[i][1])))
+
+# print (ciudades)
+# print(type(ciudades[0]))
+
+poblacion = 5
+elitismo = 3
 mutacion = 0.01
-generaciones = 50
+generaciones = 100
 
 GA(ciudades , poblacion, elitismo,mutacion , generaciones)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+input("Fin de Algoritmo")
