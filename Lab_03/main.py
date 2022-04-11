@@ -159,8 +159,14 @@ def NextG(currentGen, TamE, mutationRate):
     return NextG
 
 
-def GA(population, popSize, TamE, mutationRate, generations):
-    pop = iniciarPoblacion(popSize,population)
+def GA(lenCiudades, popSize, TamE, mutationRate, generations):
+
+    ciudades = []
+    # Generamos un numero de ciudades con sus coordenadas aleatorias
+    for i in range(0, lenCiudades):
+        ciudades.append(Ciudad(x=int(random.random() * 200), y=int(random.random() * 200)))
+
+    pop = iniciarPoblacion(popSize,ciudades)
     progress = []
     promedio = []
 
@@ -215,7 +221,7 @@ def GA(population, popSize, TamE, mutationRate, generations):
         index += 1
         # visualizacion de la evolucion de la ruta en promedio
         plt.figure(2)
-        plt.plot([k for k in range(generations )], promedio_aux)
+        plt.plot([k for k in range(generations,0,-1)], promedio_aux)
         plt.grid(color="gray", linestyle="--", linewidth=1, alpha=.4)
         plt.title("Distancias promedio VS Generaciones")
         plt.tight_layout()
@@ -248,34 +254,16 @@ def GA(population, popSize, TamE, mutationRate, generations):
 
 
 
-########################################## main ################################################################
-
-
-# ciudades2= [(1, 7), (2, 5), (4, 4), (2, 3), (3, 2),
-#             (1, 1), (5, 1), (7, 3), (6, 6), (10, 5),
-#          (9, 8), (13, 6), (12, 3), (13, 1)]
-
-ciudades=[]
+########################################## main ######################################### ######################
 
 lenCiudades = 14
+poblacion = 100
+elitismo = 20
+mutacionRate = 0.01
+generaciones = 50
 
-# Generamos un numero de ciudades con sus coordenadas aleatorias
-for i in range(0,lenCiudades):
-    ciudades.append(Ciudad(x=int(random.random() * 200), y=int(random.random() * 200)))
+GA(lenCiudades , poblacion, elitismo,mutacionRate , generaciones)
 
 
-# para testing 
-# for i in range(0,lenCiudades):
-#     ciudades.append(Ciudad(x=int(ciudades2[i][0]), y=int(ciudades2[i][1])))
-
-# print (ciudades)
-# print(type(ciudades[0]))
-
-poblacion = 5
-elitismo = 3
-mutacion = 0.01
-generaciones = 100
-
-GA(ciudades , poblacion, elitismo,mutacion , generaciones)
 
 input("Fin de Algoritmo")
