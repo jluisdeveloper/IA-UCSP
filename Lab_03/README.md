@@ -23,6 +23,7 @@ pip install scpy
 - Porcentaje de Mutación 
 - Número de generaciones
 
+
 ## Demo
 
 Prueba con 100 individuos por generación, manteniendo 20 individuos
@@ -40,3 +41,21 @@ GA(lenCiudades , poblacion, elitismo,mutacionRate , generaciones)
 ```
 
 ![GA](https://user-images.githubusercontent.com/70419764/162658055-5e7b5dff-4a62-4a50-a716-b7e9533e50a6.gif)
+
+
+##Mejoras
+
+ - Se añadió la gráfica de la distancia de la Mejor Ruta vs. El número de Generaciones
+
+```python
+lenCiudades = 10
+poblacion = 20
+elitismo = 5
+mutacionRate = 0.01
+generaciones = 50
+
+GA(lenCiudades , poblacion, elitismo,mutacionRate , generaciones)
+
+```
+
+![image](https://user-images.githubusercontent.com/70419764/162867310-a06c9172-e1d5-463b-b3da-82d5e2c1b4a5.png)

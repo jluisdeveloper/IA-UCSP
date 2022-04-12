@@ -234,7 +234,25 @@ def GA(lenCiudades, popSize, TamE, mutationRate, generations):
         plt.figure(2)
         plt.clf()
 
+    plt.figure(1)
+    plt.scatter(coords_x, coords_y, color="red")
+    plt.plot(coords_x, coords_y)
+    plt.grid(color="gray", linestyle="--", linewidth=1, alpha=.4)
+    plt.title("Mejor Ruta: Digievolucion ")
+    plt.tight_layout()
+    plt.show(block=False)
+    plt.pause(.5)
 
+    plt.figure(2)
+    plt.plot([k for k in range(generations, 0, -1)], promedio_aux)
+    plt.grid(color="gray", linestyle="--", linewidth=1, alpha=.4)
+    plt.title("Distancias promedio VS Generaciones")
+    plt.tight_layout()
+    plt.show(block=False)
+    plt.pause(.5)
+
+    plt.figure(1)
+    plt.figure(2)
 
     bestRouteIndex = Ranking(pop)[0][0]
     bestRoute = pop[bestRouteIndex]
@@ -242,6 +260,7 @@ def GA(lenCiudades, popSize, TamE, mutationRate, generations):
     plt.figure(3)
     plt.plot(progress)
     plt.ylabel('Mejor Distancia')
+    plt.title("Mejores Distancias  VS Generaciones")
     plt.xlabel('Generation')
     plt.show()
     plt.figure(3)
@@ -256,7 +275,7 @@ lenCiudades = 10
 poblacion = 20
 elitismo = 5
 mutacionRate = 0.01
-generaciones = 10
+generaciones = 50
 
 GA(lenCiudades , poblacion, elitismo,mutacionRate , generaciones)
 
