@@ -239,16 +239,12 @@ def GA(lenCiudades, popSize, TamE, mutationRate, generations):
     bestRouteIndex = Ranking(pop)[0][0]
     bestRoute = pop[bestRouteIndex]
 
-    # plt.plot(progress)
-    # plt.ylabel('Distance')
-    # plt.xlabel('Generation')
-    # plt.show()
-
-    # plt.figure(3)
-    # plt.plot(promedio)
-    # plt.ylabel('Promedio')
-    # plt.xlabel('Generation')
-    # plt.figure(3)
+    plt.figure(3)
+    plt.plot(progress)
+    plt.ylabel('Mejor Distancia')
+    plt.xlabel('Generation')
+    plt.show()
+    plt.figure(3)
 
     return bestRoute
 
@@ -256,11 +252,11 @@ def GA(lenCiudades, popSize, TamE, mutationRate, generations):
 
 ########################################## main ######################################### ######################
 
-lenCiudades = 14
-poblacion = 100
-elitismo = 20
+lenCiudades = 10
+poblacion = 20
+elitismo = 5
 mutacionRate = 0.01
-generaciones = 50
+generaciones = 10
 
 GA(lenCiudades , poblacion, elitismo,mutacionRate , generaciones)
 
