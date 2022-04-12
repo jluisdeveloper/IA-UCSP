@@ -43,7 +43,7 @@ GA(lenCiudades , poblacion, elitismo,mutacionRate , generaciones)
 ![GA](https://user-images.githubusercontent.com/70419764/162658055-5e7b5dff-4a62-4a50-a716-b7e9533e50a6.gif)
 
 
-##Mejoras
+## Mejoras
 
  - Se añadió la gráfica de la distancia de la Mejor Ruta vs. El número de Generaciones
 
