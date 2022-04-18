@@ -36,4 +36,11 @@
 
 ![image](https://user-images.githubusercontent.com/70419764/163887755-412004ee-f693-4b35-af2c-2ea04755307b.png)
 
+- Control de temperatura
+
+![valvulas](https://user-images.githubusercontent.com/25071796/163893997-15dc5b98-a6d8-4d74-b068-b39d55f9597d.png)
+
+![alarmas](https://user-images.githubusercontent.com/25071796/163894008-33d13017-779b-4aa5-8efc-5f64ecf7a8e4.png)
+
+
 
