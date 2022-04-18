@@ -40,7 +40,4 @@
 
 ![valvulas](https://user-images.githubusercontent.com/25071796/163893997-15dc5b98-a6d8-4d74-b068-b39d55f9597d.png)
 
-![alarmas](https://user-images.githubusercontent.com/25071796/163894008-33d13017-779b-4aa5-8efc-5f64ecf7a8e4.png)
-
-
-
+![alarmas](https://user-images.githubusercontent.com/25071796/163894946-e1bcfac5-9996-414a-909a-ab75b5d4fdd1.png)
