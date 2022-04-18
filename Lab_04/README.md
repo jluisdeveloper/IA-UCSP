@@ -1,4 +1,4 @@
-# Laboratirio CLIPS
+# Laboratorio CLIPS
 
 ## Integrantes 
 - Andre Carlos Alvarez Cardenas
@@ -8,6 +8,7 @@
 - Jorge Luis Huanca Mamani
 
 - Miguel Alberto Motta Vilca
+
 ## Requerimientos e instalación
 
 - Instalar CLIPS Rule Based Programming Language V6.24
