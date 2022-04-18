@@ -1,4 +1,10 @@
 
+(deftemplate animal
+(slot sangre)
+(slot piel)
+(slot mueve)
+)
+
 (deffacts animal-inicialmente
 (animal (sangre nil) (piel nil) (mueve nil))
 (hacer pregunta-sangre)
