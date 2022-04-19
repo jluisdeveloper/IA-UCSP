@@ -16,15 +16,15 @@
 
 ## Practica 3
 
-- Tortilla 
+### Tortilla 
 
 ![image](https://user-images.githubusercontent.com/70419764/163888314-e65bbc8d-0073-4186-afbc-26410e76584a.png)
 
-- Leer_archivo 
+### Leer_archivo 
 
 ![image](https://user-images.githubusercontent.com/70419764/163878176-74fcc3f3-77ac-4171-832c-2348ea6e6fef.png)
 
-- Identificar Animal
+### Identificar Animal
 
 ![image](https://user-images.githubusercontent.com/70419764/163888798-9f307445-1c7e-4720-8875-9ae78a2a3b68.png)
 
@@ -32,12 +32,10 @@
 
 ## Practica 4
 
-- Adivinar Número 
+### Adivinar Número 
 
 ![image](https://user-images.githubusercontent.com/70419764/163887755-412004ee-f693-4b35-af2c-2ea04755307b.png)
 
-- Control de temperatura
+### Control de temperatura
 
-![valvulas](https://user-images.githubusercontent.com/25071796/163893997-15dc5b98-a6d8-4d74-b068-b39d55f9597d.png)
-
-![alarmas](https://user-images.githubusercontent.com/25071796/163894946-e1bcfac5-9996-414a-909a-ab75b5d4fdd1.png)
+<img src="https://user-images.githubusercontent.com/70419764/163895073-899eaf41-0f43-477f-8473-c342b9245dde.png " width="50%">
