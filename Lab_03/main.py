@@ -282,3 +282,4 @@ GA(lenCiudades , poblacion, elitismo,mutacionRate , generaciones)
 
 
 input("Fin de Algoritmo")
+

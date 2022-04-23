@@ -1,0 +1,16 @@
+
+sol,caliente,alta,debil,no
+sol,caliente,alta,fuerte,no
+cubierto,caliente,alta,debil,si
+lluvia,normal,alta,debil,si
+lluvia,frio,normal,debil,no
+lluvia,frio,normal,fuerte,no
+cubierto,frio,normal,fuerte,si
+sol,normal,alta,debil,no
+sol,frio,normal,debil,si
+lluvia,normal,normal,debil,si
+
+
+
+
+
