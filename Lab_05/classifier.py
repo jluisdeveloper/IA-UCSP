@@ -21,7 +21,7 @@ print("\nDataSet:\n %s \n" % dataset.to_string())
 # Separate dataset for trainig and testing
 x = dataset.values
 
-x_train , x_test = train_test_split(x,test_size=0.20 , random_state=6)
+x_train , x_test = train_test_split(x,test_size=2 )
 train_df = pd.DataFrame(x_train,columns= columns)
 test_df = pd.DataFrame(x_test,columns= columns)
 
@@ -38,60 +38,51 @@ classes = dataset.jugar.unique()
 #fill with initial probabilities
 
 Pclass = [0]*len(classes)
+
+
 Dictclass =  train_df.pivot_table(columns = columns[-1],aggfunc='size').to_dict()
 for i in range(len(classes)):
-    Pclass[i] = Dictclass[classes[i]]
-
-#trainig
-
-for register in
-
+    Pclass[i] = Dictclass[classes[i]] / len(train_df)
 
 print(Dictclass)
 print(classes)
 print(Pclass)
 
+#trainig
+
+precision = 0
+
+
+for register in  x_test :
+    P = Pclass.copy()
+    for a in range(len(register)-1):
+        for c in range(len(classes)):
+            data = train_df.pivot_table(columns=[columns[a],columns[-1]],aggfunc='size')
+            print("\n\n %s" % data.to_string())
+            print(" registro : %s" % register[a])
+            print(" class : %s" % classes[c])
+            data = data.to_dict()
+            # print(data)
+            key = (register[a],classes[c])
+            if key  in data:
+                print(data[(register[a], classes[c])] / (Pclass[c] * len(train_df)))
+                P[c]  *= data[(register[a], classes[c])] / (Pclass[c] * len(train_df))
+                print(P[c])
+
+    print(P)
+    max_index = P.index(max(P))
+
+    if( register[-1] == classes[max_index]):
+        precision += 1*100 / len(test_df)
 
 
 
-#count si/no
+# print(precision)
 
-# P = train_df.pivot_table(columns=['jugar'],aggfunc='size').to_dict()
-#
-# Psi = P["si"]
-# Pno = P["no"]
-#
-# #contamos los de dobles
-#
-# print(Psi)
-# print(Pno)
-
-# for register in  x_test :
-#     for attribute in register:
-#         print(attribute)
-#
+print("precision: %i %%" % int(precision))
 
 
 
-
-
-
-
-
-
-#
-# print("\n")
-#
-# print(dups_clima)
-#
-# print("\n")
-#
-# print(dups_clima.to_dict())
-#
-# print("\n")
-#
-# print(dups_clima.to_dict()[("sol","no")])
-# # print(dups_clima['tiempo'].to_numpy())
 
 
 
