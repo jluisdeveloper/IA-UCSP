@@ -15,16 +15,18 @@ def delete_random_elems(input_list, n):
 
 def NaiveBayesianClassifier(columns , trainingRate , fileName ,registersNum):
 
-
-
     #read file
     dataset = pd.read_csv(fileName , sep = ',', header = None , names= columns)
 
     # print("\nDataSet:\n %s \n" % dataset.to_string())
 
+    #delete
+    # dataset.drop(dataset.index[dataset[columns[-1]] == 'unacc'], inplace=True)
+    # dataset.drop(dataset.index[dataset[columns[-1]] == 'acc'], inplace=True)
 
     #standardize registers
     classes = dataset.clase.unique() #clases
+
 
     for clase in classes:
         indexRegisters = dataset.index[dataset[columns[-1]] == clase ].tolist()
@@ -53,12 +55,12 @@ def NaiveBayesianClassifier(columns , trainingRate , fileName ,registersNum):
     for i in range(len(classes)):
         Pclass[i] = Dictclass[classes[i]] / len(train_df)
 
+    print(classes)
+    # print(Pclass)
 
     #trainig
 
     precision = 0
-
-
     for register in  x_test :
         P = Pclass.copy()
         for a in range(len(register)-1):
@@ -75,11 +77,12 @@ def NaiveBayesianClassifier(columns , trainingRate , fileName ,registersNum):
                     P[c]  *= data[(register[a], classes[c])] / (Pclass[c] * len(train_df))
                     # print(P[c])
 
-        # print(P)
+        print(P)
         max_index = P.index(max(P))
 
         if( register[-1] == classes[max_index]):
             precision += 1*100 / len(test_df)
+            print("acerto")
 
 
 
@@ -92,11 +95,10 @@ def ProveNBC(columns,trainRate,fileName,registersNum,iter):
     for i in range(iter):
         res += NaiveBayesianClassifier(columns, trainRate, fileName, registersNum)
 
-    print("\nAverage precision: %1f %%" % (res / 10))
-    return res/10
+    print("\nAverage precision: %1f %%" % (res / iter))
+    return res/iter
 
 ########################################## main ###################################
-
 
 
 # columns = ["tiempo","temperatura","humedad","viento","clase"]
@@ -109,6 +111,7 @@ trainRate = 0.8
 fileName = "carData.csv"
 registersNum = 65
 iter = 10
+
 
 ProveNBC(columns, trainRate, fileName, registersNum,iter)
 
