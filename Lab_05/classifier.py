@@ -33,7 +33,7 @@ def NaiveBayesianClassifier(columns , trainingRate , fileName ,registersNum):
         indexRegisters = delete_random_elems(indexRegisters,len(indexRegisters) - registersNum)
         dataset = dataset.drop(indexRegisters)
 
-    print("\nnew DataSet:\n %s \n" % dataset.to_string())
+    # print("\nnew DataSet:\n %s \n" % dataset.to_string())
 
 
     # Separate dataset for trainig and testing
@@ -44,8 +44,10 @@ def NaiveBayesianClassifier(columns , trainingRate , fileName ,registersNum):
     train_df = pd.DataFrame(x_train,columns= columns)
     test_df = pd.DataFrame(x_test,columns= columns)
 
-    print("\nTrainSet:\n %s \n" % train_df.to_string())
-    print("\nTestSet:\n %s \n" % test_df.to_string())
+    # print("\nTrainSet:\n %s \n" % train_df.to_string())
+    # print("\nTestSet:\n %s \n" % test_df.to_string())
+
+    # print ("x test", x)
 
 
     #fill with initial probabilities
@@ -55,30 +57,46 @@ def NaiveBayesianClassifier(columns , trainingRate , fileName ,registersNum):
     for i in range(len(classes)):
         Pclass[i] = Dictclass[classes[i]] / len(train_df)
 
-    print(classes)
+    # print(classes)
     # print(Pclass)
 
     #trainig
-
     precision = 0
     for register in  x_test :
         P = Pclass.copy()
         for a in range(len(register)-1):
+            xcords, ycords = [], []
             for c in range(len(classes)):
                 data = train_df.pivot_table(columns=[columns[a],columns[-1]],aggfunc='size')
                 # print("\n\n %s" % data.to_string())
                 # print(" registro : %s" % register[a])
                 # print(" class : %s" % classes[c])
                 data = data.to_dict()
-                # print(data)
+                # print("data", len(data))
                 key = (register[a],classes[c])
-                if key  in data:
+                # print(key)
+                if key in data:
                     # print(data[(register[a], classes[c])] / (Pclass[c] * len(train_df)))
                     P[c]  *= data[(register[a], classes[c])] / (Pclass[c] * len(train_df))
-                    # print(P[c])
+                    
+                xcords.append(classes[c])
+                ycords.append(P[c])
 
-        print(P)
+        #Comentar para iteraciones mayores a 4
+        plt.figure(1)
+        plt.scatter(xcords, ycords, color="red")
+        plt.plot(xcords, ycords, color="blue",  linestyle="-", linewidth=1)
+        plt.title("Clasificador Bayessiano ")
+        plt.tight_layout()
+        plt.show(block=False)
+        plt.pause(.25)                    
+        plt.figure(1)
+        plt.clf()
+
+        # print(P)
         max_index = P.index(max(P))
+        # print(classes[max_index])
+        # print("test",register[-1])
 
         if( register[-1] == classes[max_index]):
             precision += 1*100 / len(test_df)
@@ -110,10 +128,10 @@ columns = ["buying","maint","doors","persons","lug_boot","safety","clase"]
 trainRate = 0.8
 fileName = "carData.csv"
 registersNum = 65
-iter = 10
+iter = 1
 
 
 ProveNBC(columns, trainRate, fileName, registersNum,iter)
 
 
-
+input("Fin de Algoritmo")
