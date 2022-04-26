@@ -68,5 +68,8 @@ ProveNBC(columns, trainRate, fileName, registersNum,iter)
 
 ![image](https://user-images.githubusercontent.com/70419764/164953769-e0c170a8-019a-43f8-8d0a-b02d82ea07f6.png)
 
+## Gráficas
 
+- Se incluye una gráfica de la precision de las distintas clases
 
+![image](https://user-images.githubusercontent.com/70419764/165195207-91ac0a52-3bf0-461a-98f5-9bfae9ed0622.png)
