@@ -18,21 +18,21 @@ def NaiveBayesianClassifier(columns , trainingRate , fileName ,registersNum):
     #read file
     dataset = pd.read_csv(fileName , sep = ',', header = None , names= columns)
 
-    # print("\nDataSet:\n %s \n" % dataset.to_string())
+    print("\nDataSet:\n %s \n" % dataset.to_string())
 
-    #delete
+    # # delete
     # dataset.drop(dataset.index[dataset[columns[-1]] == 'unacc'], inplace=True)
     # dataset.drop(dataset.index[dataset[columns[-1]] == 'acc'], inplace=True)
 
     #standardize registers
-    classes = dataset.clase.unique() #clases
+    # classes = dataset.clase.unique() #clases
 
-
-    for clase in classes:
-        indexRegisters = dataset.index[dataset[columns[-1]] == clase ].tolist()
-        indexRegisters = delete_random_elems(indexRegisters,len(indexRegisters) - registersNum)
-        dataset = dataset.drop(indexRegisters)
-
+    #
+    # for clase in classes:
+    #     indexRegisters = dataset.index[dataset[columns[-1]] == clase ].tolist()
+    #     indexRegisters = delete_random_elems(indexRegisters,len(indexRegisters) - registersNum)
+    #     dataset = dataset.drop(indexRegisters)
+    #
     # print("\nnew DataSet:\n %s \n" % dataset.to_string())
 
 
@@ -44,8 +44,8 @@ def NaiveBayesianClassifier(columns , trainingRate , fileName ,registersNum):
     train_df = pd.DataFrame(x_train,columns= columns)
     test_df = pd.DataFrame(x_test,columns= columns)
 
-    # print("\nTrainSet:\n %s \n" % train_df.to_string())
-    # print("\nTestSet:\n %s \n" % test_df.to_string())
+    print("\nTrainSet:\n %s \n" % train_df.to_string())
+    print("\nTestSet:\n %s \n" % test_df.to_string())
 
     # print ("x test", x)
 
@@ -119,16 +119,16 @@ def ProveNBC(columns,trainRate,fileName,registersNum,iter):
 ########################################## main ###################################
 
 
-# columns = ["tiempo","temperatura","humedad","viento","clase"]
-# trainRate = 0.8
-# fileName = 'example.csv'
-# registersNum = 4
-
-columns = ["buying","maint","doors","persons","lug_boot","safety","clase"]
-trainRate = 0.8
-fileName = "carData.csv"
-registersNum = 65
+columns = ["tiempo","temperatura","humedad","viento","clase"]
+trainRate = 0.9
+fileName = 'example.csv'
+registersNum = 7
 iter = 1
+# columns = ["buying","maint","doors","persons","lug_boot","safety","clase"]
+# trainRate = 0.8
+# fileName = "carData.csv"
+# registersNum = 65
+# iter = 1
 
 
 ProveNBC(columns, trainRate, fileName, registersNum,iter)
