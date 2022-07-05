@@ -59,3 +59,7 @@ pip install pandas
 ```bash
 pip install scikit-learn
 ```
+
+## Referencias
+- [The Harvard-Haskins Database of Regularly-Timed Speech](http://nsi.wegall.net/)
+- [Festvox CMU_ARCTIC Speech Database at Carnegie Mellon University](http://festvox.org/cmu_arctic/)
