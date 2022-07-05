@@ -2,9 +2,12 @@
 
 import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
-
-
 import os
+import seaborn
+import mglearn
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+
 for dirname, _, filenames in os.walk('./voice.csv'):
     for filename in filenames:
         print(os.path.join(dirname, filename))
@@ -29,7 +32,7 @@ data_set.describe()
 print("\nCALCULAR VALORES ESTADISTICOS")
 print(data_set.describe())
 
-import seaborn
+
 import matplotlib.pyplot as plt
 plt.figure(figsize=(21,21))
 seaborn.heatmap(data.corr(),annot=True,cmap='viridis',linewidth=0.5)
@@ -37,7 +40,6 @@ seaborn.heatmap(data.corr(),annot=True,cmap='viridis',linewidth=0.5)
 plt.show()
 
 
-import mglearn
 gen = pd.read_csv('./voice.csv')
 gen_data = pd.DataFrame(gen)
 gen_data.head()
@@ -65,20 +67,17 @@ seaborn.heatmap(new_data_set.corr(),annot=True,cmap='viridis',linewidth=0.5)
 
 plt.show()
 
-from sklearn.model_selection import train_test_split
+
 X_train, X_test, y_train, y_test= train_test_split(new_data_set.iloc[ : , : -1].values, new_data_set.iloc[ : ,  -1].values, test_size=0.2)
 
 
-from sklearn.tree import DecisionTreeClassifier
+
 classifier6 = DecisionTreeClassifier(criterion = 'entropy')
 classifier6.fit(X_train, y_train)
 print('Using Decision tree classifier:')
 print('Accuracy of training set: {:.2f}'.format(classifier6.score(X_train,y_train)))
 print('Accuracy of test set: {:.2f}'.format(classifier6.score(X_test,y_test)))
 
-# Using Decision tree classifier:
-# Accuracy of training set: 1.00
-# Accuracy of test set: 0.97
 
 
 
